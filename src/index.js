@@ -55,6 +55,16 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
+  // Gracefully catch malformed JSON payloads from Postman or client apps
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    console.error('❌ Lỗi cú pháp JSON trong yêu cầu gửi lên:', err.message);
+    return res.status(400).json({
+      success: false,
+      error: 'Malformed JSON payload',
+      message: 'Cú pháp JSON bạn gửi trong phần Body bị lỗi. Hãy kiểm tra lại xem có bị quên dấu phẩy (,), thừa dấu phẩy ở dòng cuối, hoặc mở đóng ngoặc sai không.',
+      details: err.message
+    });
+  }
   console.error(err.stack);
   res.status(500).json({ success: false, message: 'Something went wrong!' });
 });

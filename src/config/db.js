@@ -8,7 +8,7 @@ const poolConfig = process.env.DATABASE_URL
   ? {
       connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
-      connectionTimeoutMillis: 6000
+      connectionTimeoutMillis: 15000 // 15s timeout for cloud DB cold starts (e.g., Neon serverless)
     }
   : {
       host: process.env.DB_HOST || 'localhost',
@@ -17,7 +17,7 @@ const poolConfig = process.env.DATABASE_URL
       password: process.env.DB_PASSWORD || 'postgres123',
       database: process.env.DB_NAME || 'product_db',
       ssl: isCloudDB ? { rejectUnauthorized: false } : false,
-      connectionTimeoutMillis: 6000
+      connectionTimeoutMillis: 15000
     };
 
 let pgPool = new Pool(poolConfig);
@@ -141,7 +141,7 @@ const pool = {
         err.message.includes('does not exist') ||
         err.message.includes('database')
       ) {
-        console.warn('⚠️ Connection to PostgreSQL database failed. Switching to local in-memory database fallback.');
+        console.warn(`⚠️ Connection to PostgreSQL database failed (${err.message}). Switching to local in-memory database fallback.`);
         isMock = true;
         return handleMockQuery(text, params);
       }
