@@ -1012,6 +1012,11 @@
 
     // Check Health API & load data
     async function checkHealthAndLoad() {
+      await updateHealthStatus();
+      await loadProducts();
+    }
+
+    async function updateHealthStatus() {
       try {
         const res = await fetch('/health');
         const health = await res.json();
@@ -1023,15 +1028,13 @@
         } else {
           dbStatusBadge.className = 'db-status memory tooltip-trigger';
           dbStatusText.textContent = 'In-Memory Demo';
-          dbStatusBadge.setAttribute('data-tooltip', 'PostgreSQL offline. Đang chạy trong bộ nhớ đệm giả lập (dữ liệu sẽ mất khi restart server).');
+          dbStatusBadge.setAttribute('data-tooltip', 'PostgreSQL offline. Đang chạy trong bộ nhớ đệm giả lập.');
         }
       } catch (err) {
         dbStatusBadge.className = 'db-status memory tooltip-trigger';
         dbStatusText.textContent = 'Offline Fallback';
-        dbStatusBadge.setAttribute('data-tooltip', 'Không thể kết nối đến server API. Đang hiển thị dữ liệu giả lập.');
+        dbStatusBadge.setAttribute('data-tooltip', 'Không thể kết nối đến server API. Đang hiển thị dữ liệu.');
       }
-      
-      await loadProducts();
     }
 
     // Load Products
@@ -1041,6 +1044,10 @@
         const json = await res.json();
         if (json.success) {
           productsList = json.data;
+          // Auto-recover UI badge if it was stuck on Offline Fallback due to initial Render cold boot
+          if (dbStatusText.textContent === 'Offline Fallback' || dbStatusText.textContent === 'In-Memory Demo') {
+            updateHealthStatus();
+          }
         } else {
           showToast('Lỗi khi lấy dữ liệu từ API', 'error');
           productsList = [];
