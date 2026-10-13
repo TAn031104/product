@@ -1,6 +1,5 @@
 name: CI/CD Pipeline - Product API
 
-# 1. Kích hoạt khi có code push hoặc mở Pull Request vào nhánh main
 on:
   push:
     branches: [ "main" ]
@@ -8,9 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # ==========================================================
-  # JOB 1: KIỂM THỬ TỰ ĐỘNG (CI - Continuous Integration)
-  # ==========================================================
   test:
     name: 🧪 Run Automated Tests
     runs-on: ubuntu-latest
@@ -31,9 +27,6 @@ jobs:
       - name: Execute Tests
         run: npm test
 
-  # ==========================================================
-  # JOB 2: QUÉT BẢO MẬT (DevSecOps)
-  # ==========================================================
   security-scan:
     name: 🛡️ Security Vulnerability Scan (Trivy)
     needs: test
@@ -49,11 +42,8 @@ jobs:
           scan-type: 'fs'
           scan-ref: '.'
           severity: 'CRITICAL,HIGH'
-          exit-code: '0' # Báo cáo lỗ hổng nhưng không làm sập pipeline (để xem log)
+          exit-code: '0'
 
-  # ==========================================================
-  # JOB 3: BUILD & PUSH DOCKER IMAGE
-  # ==========================================================
   build-and-push:
     name: 🐳 Build & Push Docker Image
     needs: [test, security-scan]
