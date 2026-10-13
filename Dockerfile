@@ -18,6 +18,7 @@ COPY --from=builder /app/node_modules ./node_modules
 # Copy source code
 COPY package*.json ./
 COPY src ./src
+COPY public ./public
 
 # Expose port
 EXPOSE 3000
