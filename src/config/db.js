@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 
 // Support both DATABASE_URL connection string and separate DB variables
 // Auto-enable SSL for cloud databases like Neon.tech or Supabase
-const isCloudDB = process.env.DATABASE_URL || (process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1');
+const isCloudDB = process.env.DATABASE_URL || process.env.DB_SSL === 'true';
 
 const poolConfig = process.env.DATABASE_URL
   ? {
