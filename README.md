@@ -23,10 +23,10 @@ flowchart LR
         SG --> App["📦 Container: product-app<br/>(Node.js 18 API / UI)"]
         
         subgraph DockerNet["🐳 Mạng nội bộ Docker (Bridge Network)"]
-            App <==|"Truy vấn nội bộ (db:5432)"| DB["🗄️ Container: product-db<br/>(PostgreSQL 15)"]
+            App <-->|"Truy vấn SQL (Port 5432)"| DB["🗄️ Container: product-db<br/>(PostgreSQL 15)"]
         end
 
-        DB <==|"Lưu trữ dữ liệu bền vững"| Vol[("💾 Docker Volume: app_pgdata")]
+        DB <-->|"Lưu trữ bền vững"| Vol[("💾 Docker Volume: app_pgdata")]
     end
 ```
 
@@ -41,8 +41,8 @@ flowchart TD
     Dev["👨‍💻 Developer (git push origin main)"] --> Repo["📦 GitHub Repository"]
 
     subgraph CI["🔄 TẦNG CI (GitHub Actions Runner)"]
-        T1["🧪 1. Automated Tests<br/>(Chạy Unit Test node:test)"]
-        T2["🛡️ 2. DevSecOps Scan<br/>(Quét lỗ hổng CVE với Trivy)"]
+        T1["🧪 1. Automated Tests<br/>(Chạy Unit Test)"]
+        T2["🛡️ 2. DevSecOps Scan<br/>(Quét lỗ hổng với Trivy)"]
         T3["🐳 3. Multi-stage Docker Build<br/>(Buildx & Push lên Docker Hub)"]
         T1 --> T2 --> T3
     end
