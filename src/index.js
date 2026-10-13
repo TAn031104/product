@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
   }
   res.json({
     message: '🚀 Product API is running!',
-    version: '1.0.0',
+    'version': '2.0.0 (Live CD via GitHub Actions)',
     database_mode: pool.isMock() ? 'memory' : 'postgresql',
     endpoints: {
       'GET    /api/products':     'Get all products',
