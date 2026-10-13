@@ -70,7 +70,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/product-api:latest
-            ${{ secrets.DOCKER_USERNAME }}/product-api:${{ github.sha }}
+            thanhan01/product-api:latest
+            thanhan01/product-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
